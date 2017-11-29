@@ -6,7 +6,7 @@
   "author": "Данила Пихновский",
   "repository": {
     "type": "git",
-    "url": "git@github.com:htmlacademy-javascript/191681-keksobooking.git"
+    "url": "git+ssh://git@github.com/htmlacademy-javascript/191681-keksobooking.git"
   },
   "bugs": {
     "url": "https://github.com/htmlacademy-javascript/191681-keksobooking/issues"
@@ -22,5 +22,8 @@
   },
   "engines": {
     "node": "^6.10"
-  }
+  },
+  "homepage": "https://github.com/htmlacademy-javascript/191681-keksobooking#readme",
+  "main": "index.js",
+  "keywords": []
 }

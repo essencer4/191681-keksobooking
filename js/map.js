@@ -1,10 +1,28 @@
 'use strict';
 
-// Переменные-константы и массивы || Основные статичные данные
+// 1. Создайте массив, состоящий из 8 сгенерированных JS объектов
+// Создаем переменную-число маркеров на карте и основные массивы с данными из ТЗ.
+// число локаций-зданий или js-объектов
 
-var numberOfLocations = 8; // число локаций-зданий или js-объектов
+var numberOfLocations = 8;
 
-var TITLE_ARRAY = [ // имена объектов-зданий
+var coordinateMinX = 300; // данные из ТЗ по координатам X и Y
+var coordinateMaxX = 900;
+var coordinateMinY = 100;
+var coordinateMaxY = 500;
+
+var priceMin = 1000;
+var priceMax = 1000000;
+
+var roomsMin = 1;
+var roomsMax = 5;
+
+var questsMin = 1;
+var questsMax = 8;
+
+// имена объектов-зданий
+
+var TITLE_ARRAY = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
   'Огромный прекрасный дворец',
@@ -15,19 +33,33 @@ var TITLE_ARRAY = [ // имена объектов-зданий
   'Неуютное бунгало по колено в воде'
 ];
 
-var TYPE_ARRAY = [ // типы объектов-зданий
+// типы объектов-зданий
+
+var TYPE_ARRAY = [
   'flat',
   'house',
   'bungalo'
 ];
 
-var TIME_ARRAY = [ // временные значения для заезда и выезда
+// типы объектов-зданий на русском
+
+var TYPE_ARRAY_RUS = [
+  'Квартира',
+  'Дом',
+  'Бунгало'
+];
+
+// временные значения для заезда и выезда
+
+var TIME_ARRAY = [
   '12:00',
   '13:00',
   '14:00'
 ];
 
-var FEATURES_ARRAY = [ // различные опции заказа
+// различные опции заказа
+
+var FEATURES_ARRAY = [
   'wifi',
   'dishwasher',
   'parking',
@@ -36,25 +68,201 @@ var FEATURES_ARRAY = [ // различные опции заказа
   'conditioner'
 ];
 
-// Функции || Первичное вычисление динамических данных
+// Функции
+// Функция по возвращению рандомного числа от min до max включительно
 
-var getRandomNumber = function (min, max) { // функция по возвращению рандомного числа от min до max включительно
+var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-var getRandomPriece = getRandomNumber (1000, 1000000); // вычисление рандомного прайса от 1000 до 1000000
+// Функция для генерирования порядковых номеров (индексов) для аватарок
 
-var getRandomRooms = getRandomNumber (1, 5); // вычисление рандомного числа комнаn от 1 до 5
+var avatarPicIndexes = [];
 
-var getRandomX = getRandomNumber (300, 900); // вычисление рандомного числа координаты X
+var generateAvatarPicIndexes = function (length) {
+  for (var i = 0; i < length; i++) {
+    avatarPicIndexes[i] = '0' + (i + 1);
+  }
+  return avatarPicIndexes;
+};
 
-var getRandomY = getRandomNumber (100, 500); // вычисление рандомного числа координаты Y
+// Функция для выбора случайного уникального элемента массива
+// Используется метод splice (удаляет указанное число элементов начиная с
+// указанной позиции, возвращая итоговый массив)
+
+var pickRandomUniqueItem = function (array) {
+  var currentIndex = getRandomNumber(0, array.length); // обращаемся к рандомайзеру
+  var arrayItem = array[currentIndex];
+  array.splice(currentIndex, 1); // удаляем выбрынный элемент из массива
+  return arrayItem;
+};
+
+// Функция для выбора случайного НЕ уникального элемента массива
+
+var pickRandomNotUniqueItem = function (array) {
+  var currentIndex = getRandomNumber(0, array.length); // обращаемся к рандомайзеру
+  return array[currentIndex];
+};
+
+// Функция для "перемешивания" массива и задания ему рандомной длины
+
+var getRandomLengthAndContentArray = function (array) {
+  var clonedItems = array.slice(0); // через slice копируем массив
+  var shuffledItems = []; // создаем пустой массив-"черновик"
+  var arrayLength = getRandomNumber(1, clonedItems.length);
+  for (var j = 0; j < arrayLength; j++) {
+    shuffledItems.unshift(pickRandomUniqueItem(clonedItems)); // через unshift добавляем элемент в начало массива
+  }
+  return shuffledItems;
+};
+
+// Функция для генерирования уникального пути к аватару
+
+generateAvatarPicIndexes(numberOfLocations);
+var generateAvatarPath = function () {
+  return 'img/avatars/user' + pickRandomUniqueItem(avatarPicIndexes) + '.png';
+};
+
+
+// сгенерировать координаты X и Y
+
+var generateCoordinateX = function () {
+  var coordinateX = getRandomNumber(coordinateMinX, coordinateMaxX);
+  return coordinateX;
+};
+
+var generateCoordinateY = function () {
+  var coordinateY = getRandomNumber(coordinateMinY, coordinateMaxY);
+  return coordinateY;
+};
+
 
 // Склейка объектов в итоговый массив
+// создаем пустой массив
 
-var JS_OBJECTS = []; // создаем пустой массив
+var JS_OBJECTS = [];
 
 // Создаем цикл для создания этих объектов-локаций в виде объектов для массива JS_OBJECTS
+
+// сгенерировать массив из 8 объявлений
+for (var a = 0; a < 8; a++) {
+  JS_OBJECTS.push({
+    'author': {
+      'avatar': generateAvatarPath()
+    },
+
+    'offer': {
+      'title': pickRandomNotUniqueItem(TITLE_ARRAY),
+      'address': generateCoordinateX(coordinateMinX, coordinateMaxX) + ', ' + generateCoordinateY(coordinateMinY, coordinateMaxY),
+      'price': getRandomNumber(priceMin, priceMax),
+      'type': pickRandomNotUniqueItem(TYPE_ARRAY),
+      'rooms': getRandomNumber(roomsMin, roomsMax),
+      'guests': getRandomNumber(questsMin, questsMax),
+      'checkin': pickRandomNotUniqueItem(TIME_ARRAY),
+      'checkout': pickRandomNotUniqueItem(TIME_ARRAY),
+      'features': getRandomLengthAndContentArray(FEATURES_ARRAY),
+      'description': '',
+      'photos': []
+    },
+
+    'location': {
+      'x': generateCoordinateX(),
+      'y': generateCoordinateY()
+    }
+  });
+}
+
+// -----------------------------------------------------------
+// -----------------------------------------------------------
+
+// 2. У блока .map уберите класс .map--faded
+
+document.querySelector('.map').classList.remove('map--faded');
+
+// 3. На основе данных, созданных в первом пункте, создайте DOM-элементы, соответствующие меткам на карте, и заполните их данными из массива. Итоговая разметка метки должна выглядеть следующим образом:
+// И
+// 4. Отрисуйте сгенерированные DOM-элементы в блок .map__pins. Для вставки элементов используйте DocumentFragment
+
+// темплейт пина с аватаром
+var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
+
+// блок для складывания пинов
+var pinsSection = document.querySelector('.map__pins');
+
+
+// задать пинам параметры из сгенерированных объектов
+var pinRad = 23;
+var pinArrowHeight = 18;
+var createPin = function (entity) {
+  var pinElement = pinTemplate.cloneNode(true);
+
+  // базовая точка пина - это центр его окружности, в то время, как пин должен указывать на координаты не своим центром, а концом своей "иголки"
+  // поправка (y - (pinRad + pinArrowHeight)) учитывает расположение базовой точки и как-бы смещает ее на наконечник "иголки"
+  // горизоатальная поправка не требуется, т.к. базовая точка находится на вертикальной оси пина
+  pinElement.style.left = (entity.location.x) + 'px';
+  pinElement.style.top = (entity.location.y - (pinRad + pinArrowHeight)) + 'px';
+  pinElement.querySelector('img').setAttribute('src', entity.author.avatar);
+  return pinElement;
+};
+
+// записать вновь добавленные пины в разметку
+var fragment = document.createDocumentFragment();
+for (var b = 0; b < JS_OBJECTS.length; b++) {
+  fragment.appendChild(createPin(JS_OBJECTS[b]));
+}
+pinsSection.appendChild(fragment);
+
+// //////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////
+
+// перевести тип жилья на русский
+var translateOfferType = function (entity) {
+  for (var c = 0; c < 3; c++) {
+    if (entity.offer.type === TYPE_ARRAY[c]) {
+      break;
+    }
+  }
+  return TYPE_ARRAY_RUS[c];
+};
+
+
+// вывести <li> для JS_OBJECTS.offer.features
+var generateFeaturesMarkup = function (entity) {
+  var featuresMarkup = '';
+  for (var d = 0; d < entity.offer.features.length; d++) {
+    featuresMarkup += ('<li class="feature feature--' + entity.offer.features[d] + '"></li>');
+  }
+  return featuresMarkup;
+};
+
+
+// темплейт пина с аватаром
+var advertTemplate = document.querySelector('template').content.querySelector('.map__card');
+
+// блок для складывания пинов
+var advertSibling = document.querySelector('.map__filters-container');
+var advertParent = document.querySelector('.map');
+
+// 5. На основе первого по порядку элемента из сгенерированного массива и шаблона template article.map__card создайте DOM-элемент объявления, заполните его данными из объекта и вставьте полученный DOM-элемент в блок .map перед блоком .map__filters-container
+
+// задать попапу параметры из объекта
+var createAdvert = function (entity) {
+  var advertElement = advertTemplate.cloneNode(true);
+  advertElement.querySelector('h3').textContent = entity.offer.title;
+  advertElement.querySelector('p small').textContent = entity.offer.address;
+  advertElement.querySelector('.popup__price').innerHTML = entity.offer.price + ' &#x20bd;/ночь';
+  advertElement.querySelector('h4').textContent = translateOfferType(entity);
+  advertElement.querySelector('p:nth-of-type(3)').textContent = entity.offer.rooms + ' комнаты для ' + entity.offer.guests + ' гостей';
+  advertElement.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + entity.offer.checkin + ', выезд до ' + entity.offer.checkout;
+  advertElement.querySelector('.popup__features').innerHTML = generateFeaturesMarkup(entity);
+  advertElement.querySelector('p:nth-of-type(5)').textContent = entity.offer.description;
+  advertElement.querySelector('.popup__avatar').setAttribute('src', entity.author.avatar);
+  return advertElement;
+};
+
+
+// добавить объявление в разметку
+advertParent.insertBefore(createAdvert(JS_OBJECTS[0]), advertSibling);
 
 
 /* Как мы это будем делать
